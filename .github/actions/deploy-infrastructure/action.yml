@@ -39,7 +39,7 @@ runs:
         subscriptionId: ${{ inputs.subscriptionId }}
         region: ${{ env.AZURE_LOCATION }}
         template: build/main.bicep
-        parameters: applicationName="$APPLICATION_NAME" location="$LOCATION" repositoryToken="$REPOSITORY_TOKEN" repositoryUrl="$REPOSITORY_URL"
+        parameters: applicationName="${{ env.APPLICATION_NAME }}" location="${{ env.LOCATION }}" repositoryToken="${{ env.REPOSITORY_TOKEN }}" repositoryUrl="${{ env.REPOSITORY_URL }}"
     - id: deployment_token
       uses: ./.github/actions/staticwebapps-get-deployment-token
       with:
