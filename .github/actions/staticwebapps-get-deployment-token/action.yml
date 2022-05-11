@@ -1,0 +1,28 @@
+name: Get deployment token
+description: Get the deployment token for an Azure Static Web App
+author: LayZeeDK
+
+inputs:
+  name:
+    description: The resource name of the Azure Static Web App
+    required: true
+
+outputs:
+  deployment_token:
+    description: The deployment token for the Azure Static Web App
+    value: ${{ steps.deployment_token.outputs.deployment_token }}
+
+runs:
+  using: composite
+  steps:
+    - id: deployment_token
+      uses: Azure/cli@v1
+      env:
+        NAME: ${{ inputs.name }}
+      with:
+        inlineScript: |
+          DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name "${{ env.NAME }}" --query apiKey)
+          # TOOD(LayZeeDK): Verify that a masked value can be used as an output
+          #   value by uncommenting the following line
+          # echo "::add-mask::$DEPLOYMENT_TOKEN"
+          echo "::set-output name=deployment_token::$DEPLOYMENT_TOKEN"

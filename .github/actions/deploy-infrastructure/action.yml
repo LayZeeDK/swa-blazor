@@ -1,0 +1,43 @@
+name: Deploy infrastructure
+description: Deploy Azure infrastructure including resource group
+author: LayZeeDK
+
+inputs:
+  application_name:
+    description: The application name used as prefix for Azure resources
+    required: true
+  location:
+    description: The location for Azure resources
+    required: true
+  repository_token:
+    description: 'GitHub Personal Access Token (PAT) with the "repo", "workflow", and "write:packages" permissions'
+    required: true
+
+outputs:
+  deployment_token:
+    description: The deployment token for the Azure Static Web App
+    value: ${{ steps.deployment_token.outputs.deployment_token }}
+  host_name:
+    description: 'The host name of the Azure Static Web App, for example "gentle-bush-0db02ce03.azurestaticapps.net"'
+    value: ${{ steps.deploy.outputs.staticWebAppHostName }}
+
+runs:
+  using: composite
+  steps:
+    - id: deploy
+      uses: Azure/arm-deploy@v1
+      env:
+        APPLICATION_NAME: ${{ inputs.application_name }}
+        LOCATION: ${{ inputs.location }}
+        REPOSITORY_TOKEN: ${{ inputs.repository_token }}
+        REPOSITORY_URL: ${{ github.repositoryUrl }}
+      with:
+        scope: subscription
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        region: ${{ env.AZURE_LOCATION }}
+        template: build/main.bicep
+        parameters: applicationName="$APPLICATION_NAME" location="$LOCATION" repositoryToken="$REPOSITORY_TOKEN" repositoryUrl="$REPOSITORY_URL"
+    - id: deployment_token
+      uses: ./.github/actions/staticwebapps-get-deployment-token
+      with:
+        name: ${{ steps.deploy.outputs.staticWebAppName }}
