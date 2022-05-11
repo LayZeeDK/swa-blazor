@@ -12,6 +12,9 @@ inputs:
   repository_token:
     description: 'GitHub Personal Access Token (PAT) with the "repo", "workflow", and "write:packages" permissions'
     required: true
+  subscription_id:
+    description: The Azure subscription ID
+    required: true
 
 outputs:
   deployment_token:
@@ -33,7 +36,7 @@ runs:
         REPOSITORY_URL: ${{ github.repositoryUrl }}
       with:
         scope: subscription
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        subscriptionId: ${{ inputs.subscriptionId }}
         region: ${{ env.AZURE_LOCATION }}
         template: build/main.bicep
         parameters: applicationName="$APPLICATION_NAME" location="$LOCATION" repositoryToken="$REPOSITORY_TOKEN" repositoryUrl="$REPOSITORY_URL"
