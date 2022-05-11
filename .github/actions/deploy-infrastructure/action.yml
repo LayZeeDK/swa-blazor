@@ -31,8 +31,7 @@ runs:
       env:
         SERVER_URL: ${{ github.server_url }}
         REPO: ${{ github.repository }}
-        REPO_OWNER: ${{ github.repository_owner }}
-      run: echo "::set-output name=http_url::${{ env.SERVER_URL }}/${{ env.REPO_OWNER }}/${{ env.REPO }}"
+      run: echo "::set-output name=http_url::${{ env.SERVER_URL }}/${{ env.REPO }}"
       shell: bash
     - id: deploy
       uses: Azure/arm-deploy@v1
