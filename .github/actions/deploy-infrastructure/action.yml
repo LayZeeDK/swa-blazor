@@ -27,13 +27,19 @@ outputs:
 runs:
   using: composite
   steps:
+    - id: repo
+      env:
+        SERVER_URL: ${{ github.server_url }}
+        REPO: ${{ github.repository }}
+        REPO_OWNER: ${{ github.repository_owner }}
+      run: echo "::set-output name=http_url::${{ env.SERVER_URL }}/${{ env.REPO_OWNER }}/${{ env.REPO }}"
     - id: deploy
       uses: Azure/arm-deploy@v1
       env:
         APPLICATION_NAME: ${{ inputs.application_name }}
         LOCATION: ${{ inputs.location }}
         REPOSITORY_TOKEN: ${{ inputs.repository_token }}
-        REPOSITORY_URL: ${{ github.repositoryUrl }}
+        REPOSITORY_URL: ${{ steps.repo.outputs.http_url }}
       with:
         scope: subscription
         subscriptionId: ${{ inputs.subscriptionId }}
