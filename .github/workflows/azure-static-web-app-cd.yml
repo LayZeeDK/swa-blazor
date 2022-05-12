@@ -80,8 +80,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        # with:
-        #   submodules: true
       # https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Cwindows&tryIt=true&source=docs#use-the-azure-login-action-with-openid-connect
       - name: Azure OIDC login via Azure AD Federated Identity Credentials
         uses: Azure/login@v1
