@@ -24,5 +24,5 @@ runs:
           DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name "${{ env.NAME }}" --query properties.apiKey)
           # TOOD(LayZeeDK): Verify that a masked value can be used as an output
           #   value by uncommenting the following line
-          # echo "::add-mask::$DEPLOYMENT_TOKEN"
+          echo "::add-mask::$DEPLOYMENT_TOKEN"
           echo "::set-output name=deployment_token::$DEPLOYMENT_TOKEN"
