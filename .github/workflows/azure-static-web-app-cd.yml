@@ -31,6 +31,9 @@ env:
   AZURE_LOCATION: westeurope
   # AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }} # secret containing deployment token for your static web app
   AZURE_STATIC_WEB_APP_NAME: lzswablazor
+  AZURE_STATIC_WEB_APP_API_LOCATION: "Api"
+  AZURE_STATIC_WEB_APP_APP_LOCATION: "Client"
+  AZURE_STATIC_WEB_APP_OUTPUT_LOCATION: "wwwroot"
 
 jobs:
   infrastructure:
@@ -52,8 +55,11 @@ jobs:
       - id: deploy
         uses: ./.github/actions/deploy-infrastructure
         with:
+          api_location: ${{ env.AZURE_STATIC_WEB_APP_API_LOCATION }}
           application_name: ${{ env.AZURE_STATIC_WEB_APP_NAME }}
+          app_location: ${{ env.AZURE_STATIC_WEB_APP_APP_LOCATION }}
           location: ${{ env.AZURE_LOCATION }}
+          output_location: ${{ env.AZURE_STATIC_WEB_APP_OUTPUT_LOCATION }}
           repository_token: ${{ secrets.STATIC_SITES_REPOSITORY_TOKEN }}
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
@@ -69,7 +75,7 @@ jobs:
       id-token: write
     environment:
       name: production
-      url: ${{ needs.infrastructure.outputs.url }} # https://xxxxx.azurestaticapps.net/
+      url: ${{ needs.infrastructure.outputs.url }} # https://xxxxx.y.azurestaticapps.net
     runs-on: ubuntu-latest
 
     steps:
@@ -99,9 +105,9 @@ jobs:
           action: upload
           ###### Repository/Build Configurations - These values can be configured to match you app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: ${{ env.APP_LOCATION }}
-          api_location: ${{ env.API_LOCATION }}
-          app_artifact_location: ${{ env.APP_ARTIFACT_LOCATION }}
+          app_location: ${{ env.AZURE_STATIC_WEB_APP_APP_LOCATION }}
+          api_location: ${{ env.AZURE_STATIC_WEB_APP_API_LOCATION }}
+          app_artifact_location: ${{ env.AZURE_STATIC_WEB_APP_OUTPUT_LOCATION }}
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
@@ -116,7 +122,7 @@ jobs:
       id-token: write
     environment:
       name: production
-      url: ${{ needs.infrastructure.outputs.url }} # https://xxxxx.azurestaticapps.net/
+      url: ${{ needs.infrastructure.outputs.url }} # https://xxxxx.y.azurestaticapps.net
     runs-on: ubuntu-latest
 
     steps:
@@ -134,5 +140,6 @@ jobs:
       - name: Close Pull Request
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ steps.deployment_token.outputs.deployment_token }} # secret containing api token for app
+          # azure_static_web_apps_api_token: ${{ steps.deployment_token.outputs.deployment_token }} # secret containing api token for app
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: close

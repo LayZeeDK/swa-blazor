@@ -3,11 +3,20 @@ description: Deploy Azure infrastructure including resource group
 author: LayZeeDK
 
 inputs:
+  api_location:
+    description: The source path of the web API application
+    required: true
   application_name:
     description: The application name used as prefix for Azure resources
     required: true
+  app_location:
+    description: The source path of the frontend application
+    required: true
   location:
     description: The location for Azure resources
+    required: true
+  output_location:
+    description: The source path of the build artifacts
     required: true
   repository_token:
     description: 'GitHub Personal Access Token (PAT) with the "repo", "workflow", and "write:packages" permissions'
@@ -36,8 +45,11 @@ runs:
     - id: deploy
       uses: Azure/arm-deploy@v1
       env:
+        API_LOCATION: ${{ inputs.api_location }}
         APPLICATION_NAME: ${{ inputs.application_name }}
+        APP_LOCATION: ${{ inputs.app_location }}
         LOCATION: ${{ inputs.location }}
+        OUTPUT_LOCATION: ${{ inputs.output_location }}
         REPOSITORY_TOKEN: ${{ inputs.repository_token }}
         REPOSITORY_URL: ${{ steps.repo.outputs.http_url }}
       with:
@@ -45,5 +57,5 @@ runs:
         subscriptionId: ${{ inputs.subscriptionId }}
         region: ${{ env.AZURE_LOCATION }}
         template: build/main.bicep
-        parameters: applicationName="${{ env.APPLICATION_NAME }}" location="${{ env.LOCATION }}" repositoryToken="${{ env.REPOSITORY_TOKEN }}" repositoryUrl="${{ env.REPOSITORY_URL }}"
+        parameters: apiLocation="${{ env.API_LOCATION }}" applicationName="${{ env.APPLICATION_NAME }}" appLocation="${{ env.APP_LOCATION }}" location="${{ env.LOCATION }}" outputLocation="${{ env.OUTPUT_LOCATION }}" repositoryToken="${{ env.REPOSITORY_TOKEN }}" repositoryUrl="${{ env.REPOSITORY_URL }}"
     # - id: workspace_identity

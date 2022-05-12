@@ -10,6 +10,10 @@ param repositoryToken string
 @description('URI for the GitHub repository')
 param repositoryUrl string
 
+param apiLocation string
+param appLocation string
+param outputLocation string
+
 
 var defaultTags = {
   application: applicationName
@@ -31,9 +35,9 @@ module staticWebApp 'modules/static-web-app.bicep' = {
     skucode: 'Free'
     repositoryUrl: repositoryUrl
     branch: 'main'
-    appLocation: 'Client'
-    apiLocation: 'Api'
-    appArtifactLocation: 'wwwroot'
+    appLocation: appLocation
+    apiLocation: apiLocation
+    appArtifactLocation: outputLocation
     resourceTags: defaultTags
     appSettings: {
       MY_APP_SETTING1: 'value 1'
