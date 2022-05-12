@@ -38,6 +38,8 @@ env:
 jobs:
   infrastructure:
     name: Infrastructure
+    permissions:
+      contents: read
     environment: infrastructure
     runs-on: ubuntu-latest
 
@@ -69,7 +71,6 @@ jobs:
       - infrastructure
     name: Build and Deploy Job
     permissions:
-      # actions: read
       contents: read
       # Azure/login requires id-token write permission to use Federated Identity credentials
       id-token: write
@@ -114,7 +115,6 @@ jobs:
       - infrastructure
     name: Close Pull Request Job
     permissions:
-      # actions: read
       contents: read
       # Azure/login requires id-token write permission to use Federated Identity credentials
       id-token: write
