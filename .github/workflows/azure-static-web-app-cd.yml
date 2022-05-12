@@ -39,8 +39,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      deployment_token: ${{ steps.deploy.outputs.deployment_token }}
-      url: ${{ steps.deploy.outputs.url }}
+      deployment_token: ${{ steps.outputs.outputs.deployment_token }}
+      url: ${{ steps.outputs.outputs.url }}
 
     steps:
       - uses: actions/checkout@v3
@@ -56,13 +56,14 @@ jobs:
           location: ${{ env.AZURE_LOCATION }}
           repository_token: ${{ secrets.STATIC_SITES_REPOSITORY_TOKEN }}
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - name: DEBUG deploy outputs
+      - id: outputs
+        name: Outputs
         env:
           DEPLOYMENT_TOKEN: ${{ steps.deploy.outputs.deployment_token }}
           URL: ${{ steps.deploy.outputs.url }}
         run: |
-          echo "deployment_token ${{ env.DEPLOYMENT_TOKEN }}"
-          echo "url ${{ env.URL }}"
+          echo "::set-output name=deployment_token::$DEPLOYMENT_TOKEN"
+          echo "::set-output name=url::$URL"
 
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
