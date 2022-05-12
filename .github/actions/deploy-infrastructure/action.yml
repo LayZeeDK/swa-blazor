@@ -50,3 +50,4 @@ runs:
       uses: ./.github/actions/staticwebapps-get-deployment-token
       with:
         name: ${{ steps.deploy.outputs.staticWebAppName }}
+    # - id: workspace_identity
