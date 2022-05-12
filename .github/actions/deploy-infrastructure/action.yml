@@ -17,9 +17,9 @@ inputs:
     required: true
 
 outputs:
-  deployment_token:
-    description: The deployment token for the Azure Static Web App
-    value: ${{ steps.deployment_token.outputs.deployment_token }}
+  name:
+    description: The resource name of the Azure Static Web App
+    value: ${{ steps.deploy.outputs.staticWebAppName }}
   url:
     description: 'The URL of the Azure Static Web App, for example "https://gentle-bush-0db02ce03.azurestaticapps.net"'
     value: "https://${{ steps.deploy.outputs.staticWebAppHostName }}"
@@ -46,8 +46,4 @@ runs:
         region: ${{ env.AZURE_LOCATION }}
         template: build/main.bicep
         parameters: applicationName="${{ env.APPLICATION_NAME }}" location="${{ env.LOCATION }}" repositoryToken="${{ env.REPOSITORY_TOKEN }}" repositoryUrl="${{ env.REPOSITORY_URL }}"
-    - id: deployment_token
-      uses: ./.github/actions/staticwebapps-get-deployment-token
-      with:
-        name: ${{ steps.deploy.outputs.staticWebAppName }}
     # - id: workspace_identity
