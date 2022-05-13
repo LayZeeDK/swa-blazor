@@ -29,7 +29,6 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   AZURE_LOCATION: westeurope
-  # AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }} # secret containing deployment token for your static web app
   AZURE_STATIC_WEB_APP_NAME: lzswablazor
   AZURE_STATIC_WEB_APP_API_LOCATION: "Api"
   AZURE_STATIC_WEB_APP_APP_LOCATION: "Client"
