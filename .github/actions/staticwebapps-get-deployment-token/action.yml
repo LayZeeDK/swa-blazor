@@ -21,6 +21,6 @@ runs:
         NAME: ${{ inputs.name }}
       with:
         inlineScript: |
-          DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name "${{ env.NAME }}" --query properties.apiKey)
+          DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name "${{ env.NAME }}" --query properties.apiKey | jq -r)
           # echo "::add-mask::$DEPLOYMENT_TOKEN"
           echo "::set-output name=deployment_token::$DEPLOYMENT_TOKEN"
