@@ -99,7 +99,14 @@ jobs:
         run: |
           DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name "${{ env.NAME }}" --query properties.apiKey)
           echo "::set-output name=deployment_token::$DEPLOYMENT_TOKEN"
+      - name: DEBUG deployment_token
+        env:
+          DEPLOYMENT_TOKEN: ${{ steps.deployment_token.outputs.deployment_token }}
+        run: |
           echo "DEBUG deployment_token $DEPLOYMENT_TOKEN"
+          echo DEBUG startsWith quote? ${{ startsWith(env.DEPLOYMENT_TOKEN, '"') }}
+          echo DEBUG endsWith quote? ${{ endsWith(env.DEPLOYMENT_TOKEN, '"') }}
+          echo DEBUG contains quote? ${{ contains(env.DEPLOYMENT_TOKEN, '"') }}
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
