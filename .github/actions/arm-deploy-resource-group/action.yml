@@ -30,7 +30,7 @@ runs:
       with:
         scope: subscription
         subscriptionId: ${{ env.SUBSCRIPTION_ID }}
-        region: ${{ env.location }}
+        region: ${{ env.LOCATION }}
         template: infrastructure/templates/deploy-resource-group.bicep
         parameters: >-
           applicationName="${{ env.APPLICATION_NAME }}"
