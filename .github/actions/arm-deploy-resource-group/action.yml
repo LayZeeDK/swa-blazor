@@ -1,0 +1,37 @@
+name: Deploy Azure resource group
+author: LayZeeDK
+
+inputs:
+  application_name:
+    description: The application name used as prefix for Azure resources
+    required: true
+  location:
+    description: The default Azure Region for the resource group
+    required: true
+  subscription_id:
+    description: The Azure subscription ID
+    required: true
+
+outputs:
+  name:
+    description: The name of the resource group
+    value: ${{ steps.deploy.outputs.name }}
+
+runs:
+  using: composite
+  steps:
+    - id: deploy
+      name: Deploy Azure resource group
+      uses: Azure/arm-deploy@v1
+      env:
+        APPLICATION_NAME: ${{ inputs.application_name }}
+        LOCATION: ${{ inputs.location }}
+        SUBSCRIPTION_ID: ${{ inputs.subscription_id }}
+      with:
+        scope: subscription
+        subscriptionId: ${{ env.SUBSCRIPTION_ID }}
+        region: ${{ env.location }}
+        template: infrastructure/templates/deploy-resource-group.bicep
+        parameters: >-
+          applicationName="${{ env.APPLICATION_NAME }}"
+          location="${{ env.LOCATION }}"

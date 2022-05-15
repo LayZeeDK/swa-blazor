@@ -1,5 +1,4 @@
-name: Get deployment token
-description: Get the deployment token for an Azure Static Web App
+name: Get Static Web App deployment token
 author: LayZeeDK
 
 inputs:

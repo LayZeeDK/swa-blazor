@@ -1,0 +1,17 @@
+name: Get repository HTTP URL
+author: LayZeeDK
+
+outputs:
+  http_url:
+    description: The HTTP URL of the GitHub repository
+    value: ${{ steps.repo.outputs.http_url }}
+
+runs:
+  using: composite
+  steps:
+    - id: repo
+      shell: bash
+      env:
+        OWNER_AND_REPO: ${{ github.repository }}
+        SERVER_URL: ${{ github.server_url }}
+      run: echo "::set-output name=http_url::${{ env.SERVER_URL }}/${{ env.OWNER_AND_REPO }}"

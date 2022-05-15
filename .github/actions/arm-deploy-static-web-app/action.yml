@@ -1,0 +1,71 @@
+name: Deploy Azure Static Web app
+description: Deploy Azure infrastructure in existing resource group
+author: LayZeeDK
+
+inputs:
+  api_location:
+    description: The source path of the web API application
+    required: true
+  application_name:
+    description: The application name used as prefix for Azure resources
+    required: true
+  app_location:
+    description: The source path of the frontend application
+    required: true
+  existing_resource_group:
+    description: The name of an existing resource group to use
+    required: true
+  location:
+    description: The Azure Region for the Static Web App
+    required: true
+  output_location:
+    description: The source path of the build artifacts
+    required: true
+  repository_token:
+    description: 'GitHub Personal Access Token (PAT) with the "repo", "workflow", and "write:packages" permissions'
+    required: true
+
+outputs:
+  deployment_token:
+    description: The deployment token for the Static Web App
+    value: ${{ steps.deployment_token.outputs.deployment_token }}
+  url:
+    description: 'The URL of the Static Web App, for example "https://gentle-bush-0db02ce03.azurestaticapps.net"'
+    value: ${{ steps.static_web_app.outputs.url }}
+
+runs:
+  using: composite
+  steps:
+    - id: repo
+      name: Get repository HTTP URL
+      uses: ./.github/actions/get-repo-http-url
+    - id: static_web_app
+      name: Deploy Static Web App
+      uses: Azure/arm-deploy@v1
+      env:
+        API_LOCATION: ${{ inputs.api_location }}
+        APPLICATION_NAME: ${{ inputs.application_name }}
+        APP_LOCATION: ${{ inputs.app_location }}
+        EXISTING_RESOURCE_GROUP: ${{ inputs.existing_resource_group }}
+        LOCATION: ${{ inputs.location }}
+        OUTPUT_LOCATION: ${{ inputs.output_location }}
+        REPOSITORY_TOKEN: ${{ inputs.repository_token }}
+        REPOSITORY_URL: ${{ steps.repo.outputs.http_url }}
+      with:
+        scope: resourceGroup
+        resourceGroupName: ${{ env.EXISTING_RESOURCE_GROUP }}
+        template: infrastructure/templates/deploy-static-web-app.bicep
+        parameters: >-
+          apiLocation="${{ env.API_LOCATION }}"
+          applicationName="${{ env.APPLICATION_NAME }}"
+          appLocation="${{ env.APP_LOCATION }}"
+          existingResourceGroup="${{ env.EXISTING_RESOURCE_GROUP }}"
+          location="${{ env.LOCATION }}"
+          outputLocation="${{ env.OUTPUT_LOCATION }}"
+          repositoryToken="${{ env.REPOSITORY_TOKEN }}"
+          repositoryUrl="${{ env.REPOSITORY_URL }}"
+    - id: deployment_token
+      name: Get Static Web App deployment token
+      uses: ./.github/actions/get-static-web-app-deployment-token
+      with:
+        name: ${{ steps.static_web_app.outputs.name }}
